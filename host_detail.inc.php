@@ -31,7 +31,7 @@ function host_detail($options="") {
     global $conf, $self, $onadb;
 
     // Version - UPDATE on every edit!
-    $version = '1.01';
+    $version = '1.02';
 
     printmsg("DEBUG => host_detail({$options}) called", 3);
 
@@ -120,7 +120,8 @@ EOM
         $subnet['ip_mask_text'] = ip_mangle($subnet['ip_mask'],'dotted');
         $subnet['ip_mask_cidr'] = ip_mangle($subnet['ip_mask'],'cidr');
         $interface['ip_addr_text'] = ip_mangle($interface['ip_addr'],'dotted');
-        $subnet['ip_broadcast_text'] = ipcalc_info($subnet['ip_addr'], $subnet['ip_mask'])['ip_last'];
+        $subnetcalc = ipcalc_info($subnet['ip_addr'], $subnet['ip_mask']);
+        $subnet['ip_broadcast_text'] = $subnetcalc['ip_last'];
 
         // Keep track of interface names
         $ona_ints .= "{$interface['name']},";
