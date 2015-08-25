@@ -31,7 +31,7 @@ function host_detail($options="") {
     global $conf, $self, $onadb;
 
     // Version - UPDATE on every edit!
-    $version = '1.02';
+    $version = '1.03';
 
     printmsg("DEBUG => host_detail({$options}) called", 3);
 
@@ -102,10 +102,20 @@ EOM
             list($status, $sharedhostrows, $sharedhost) = ona_get_host_record(array('id' => $clust[0]['host_id']));
             $interface['shared_host_secondary'] = $sharedhost['fqdn'];
             $interface['shared_host_primary'] = $host['fqdn'];
+            list ($pristatus, $prirows, $priip) = ona_get_interface_record(array('host_id' => $host['id']));
+            list ($secstatus, $secrows, $secip) = ona_get_interface_record(array('host_id' => $sharedhost['id']));
+            $interface['shared_host_primary_ip_addr_text'] = $priip['ip_addr_text'];
+            $interface['shared_host_secondary_ip_addr_text'] = $secip['ip_addr_text'];
+
             // if this is the secondary we need to figure out what the primary host is
             if ($sharedhost['fqdn'] == $host['fqdn']) {
                 list($status, $hostprirows, $hostpri) = ona_get_host_record(array('id' => $interface['host_id']));
                 $interface['shared_host_primary'] = $hostpri['fqdn'];
+
+                list ($pristatus, $prirows, $priip) = ona_get_interface_record(array('host_id' => $interface['host_id']));
+                list ($secstatus, $secrows, $secip) = ona_get_interface_record(array('host_id' => $sharedhost['id']));
+                $interface['shared_host_primary_ip_addr_text'] = $priip['ip_addr_text'];
+                $interface['shared_host_secondary_ip_addr_text'] = $secip['ip_addr_text'];
             }
         }
 
